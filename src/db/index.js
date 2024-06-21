@@ -9,9 +9,7 @@ const connectDb = async () => {
       "mongodb://127.0.0.1:27017/myapp"
     );
 
-    console.log(
-      `/n MongoDB connected !! DB Host : ${connectionInstance.connection.host}`
-    );
+    console.log(`/n MongoDB connected !! DB Host : `);
   } catch (error) {
     console.log("MongoDB connection error: ", error);
     process.exit(1);
