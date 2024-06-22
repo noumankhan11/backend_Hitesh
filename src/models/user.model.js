@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
-    avtar: {
+    avatar: {
       type: String,
       required: true,
     },
@@ -59,7 +59,7 @@ userSchema.pre("save", async function (next) {
        To access the model, use this.constructor.
 */
   if (!this.isModified("password")) return; // if password is not modefied so don't run the following
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
