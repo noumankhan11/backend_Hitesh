@@ -13,8 +13,8 @@ connectDb()
       console.log("ERR : ", err);
       throw err;
     });
-    app.listen(3000 || 8000, () => {
-      console.log("app is listening on port ", 3000);
+    app.listen(process.env.PORT || 8000, () => {
+      console.log("app is listening on port ", process.env.PORT);
     });
   })
   .catch((err) => console.log("Db connection failed Error: ", err));
