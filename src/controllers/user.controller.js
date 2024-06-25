@@ -16,7 +16,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // return res || send response back to frontend
 
   const { username, fullname, email, password } = req.body;
-  console.log(req.body);
+  console.log(req.files);
 
   if (
     [fullname, email, username, password].some((field) => field?.trim() === "")
@@ -33,10 +33,18 @@ const registerUser = asyncHandler(async (req, res) => {
       "username or email is not available or already regitered"
     );
   }
-  console.log(req.file);
   const avatarLocalpath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
   if (!avatarLocalpath) throw new ApiError(400, "Avatar file not found");
 
   const avatar = await uploadOnCloudinary(avatarLocalpath);
