@@ -219,21 +219,22 @@ const changePassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, "curren user fetched successfully");
+    .json(new ApiResponse(200, req.user, "current user fetched successfully"));
 });
 
-// WORKING ON IT
 const udpateAccountDetails = asyncHandler(async (req, res) => {
   const { fullname, email } = req.body;
   if (!(fullname || email)) {
     throw new ApiError(400, "all fields are required");
   }
 
-  const user = User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
-      fullname,
-      email,
+      $set: {
+        fullname,
+        email,
+      },
     },
     { new: true }
   ).select("-password");
@@ -248,6 +249,8 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   if (avatarLocalPath) {
     throw new ApiError(400, "Avatar file is missing ");
   }
+
+  //-- Todo: delete old image --
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   if (!avatar.url) {
@@ -267,12 +270,12 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   ).select("-password");
   return res
     .status(200)
-    .json(ApiResponse(200, user, "Avatar upated successfully"));
+    .json(new ApiResponse(200, user, "Avatar upated successfully"));
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
   const coverImageLocalPath = req.file?.path;
-  if (coverImageLocalPath) {
+  if (!coverImageLocalPath) {
     throw new ApiError(400, "Cover image file is missing ");
   }
 
@@ -295,7 +298,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(ApiResponse(200, user, "Cover image upated successfully"));
+    .json(new ApiResponse(200, user, "Cover image upated successfully"));
 });
 
 export {
@@ -305,6 +308,7 @@ export {
   loginUser,
   logoutUser,
   refreshAccessToken,
+  udpateAccountDetails,
   updateUserAvatar,
   updateUserCoverImage,
 };
